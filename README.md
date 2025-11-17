@@ -1,11 +1,4 @@
-Here is a professional, comprehensive `README.md` tailored specifically for your **FitScore AI** project. It highlights the architecture, the AI integration, and the Google Cloud stack—perfect for a hackathon submission or portfolio.
-
-**Action:** Create a file named `README.md` in your project root and paste the content below.
-
------
-
-````markdown
-# 🧠 FitScore AI – Intelligent Health Analyzer
+# 🧠 FitScore AI – Personalized Health Score and Insights from Medical Reports
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Node.js](https://img.shields.io/badge/Node.js-18-green)
