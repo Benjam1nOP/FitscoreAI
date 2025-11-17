@@ -1,11 +1,11 @@
 const { Storage } = require('@google-cloud/storage');
 const multer = require('multer');
+const { analyzeMedicalReport } = require('./analysisService'); // <--- Import the Brain
 
-// Initialize Google Cloud Storage client
 const storage = new Storage();
 const bucketName = process.env.GCS_BUCKET_NAME;
 
-// Use in-memory storage with multer
+// multer in-memory storage
 const upload = multer({ storage: multer.memoryStorage() });
 
 const handleUpload = async (req, res) => {
@@ -13,50 +13,42 @@ const handleUpload = async (req, res) => {
     const file = req.file;
 
     if (!file) {
-      console.log('⚠️ No file uploaded in the request.');
       return res.status(400).json({ status: 'error', message: 'No file uploaded' });
     }
 
-    const fileName = `${Date.now()}-${file.originalname}`;
-    console.log(`📁 Uploading file: ${fileName} → bucket: ${bucketName}`);
+    const fileName = `${Date.now()}-${file.originalname.replace(/\s+/g, '_')}`;
+    console.log(`📁 Uploading file: ${fileName}`);
 
-    const blob = storage.bucket(bucketName).file(fileName);
-    const blobStream = blob.createWriteStream();
+    const bucket = storage.bucket(bucketName);
+    const remoteFile = bucket.file(fileName);
 
-    blobStream.on('error', err => {
-      console.error('❌ Error while uploading to Cloud Storage:', err);
-      if (!res.headersSent) {
-        res.status(500).json({ status: 'error', message: 'Upload failed', error: err.message });
-      }
+    // 1. Upload to GCS
+    await remoteFile.save(file.buffer, {
+      metadata: { contentType: file.mimetype },
+      resumable: false,
     });
 
-    blobStream.on('finish', () => {
-      const filePath = `gs://${bucketName}/${fileName}`;
-      console.log(`✅ Upload successful: ${filePath}`);
-      if (!res.headersSent) {
-        res.status(200).json({ status: 'uploaded', filePath });
-      }
+    const gcsUri = `gs://${bucketName}/${fileName}`;
+    console.log(`✅ File saved to GCS: ${gcsUri}`);
+
+    // 2. Trigger AI Analysis
+    console.log('🤖 Sending to AI Analysis Service...');
+    const aiResult = await analyzeMedicalReport(gcsUri);
+
+    // 3. Return Results to Frontend
+    return res.status(200).json({
+      status: 'success',
+      filePath: gcsUri,
+      ...aiResult // This spreads the score, bmi, etc. into the response
     });
-
-    // Start the upload stream
-    blobStream.end(file.buffer);
-
-    // Safety net in case 'finish' doesn't fire
-    setTimeout(() => {
-      if (!res.headersSent) {
-        console.warn('⚠️ Upload fallback triggered: no finish event after 5 seconds.');
-        res.status(200).json({
-          status: 'timeout',
-          message: 'Upload may have completed, but no response was returned in time.',
-        });
-      }
-    }, 5000);
 
   } catch (err) {
-    console.error('🔥 Unexpected error in handleUpload:', err);
-    if (!res.headersSent) {
-      res.status(500).json({ status: 'error', message: 'Internal server error', error: err.message });
-    }
+    console.error('🔥 Error processing upload:', err);
+    return res.status(500).json({ 
+      status: 'error', 
+      message: 'Analysis failed', 
+      error: err.message 
+    });
   }
 };
 

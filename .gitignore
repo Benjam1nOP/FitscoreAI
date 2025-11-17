@@ -1,0 +1,20 @@
+# Dependency directories
+node_modules/
+
+# Environment variables (Keep ygitour Project ID/Bucket name secret)
+.env
+
+# Google Cloud Service Account Keys (CRITICAL)
+service-account-key.json
+*.json
+
+# BUT keep package.json (we need this!)
+!package.json
+!package-lock.json
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log
