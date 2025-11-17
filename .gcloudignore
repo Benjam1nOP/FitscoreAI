@@ -5,4 +5,4 @@ npm-debug.log
 service-account-key.json
 .env
 README.md
-!public/config.js
+frontend/
