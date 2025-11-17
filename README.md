@@ -36,7 +36,7 @@
 
 FitScore AI follows a **Monorepo** structure deployed as a single container on **Cloud Run**.
 
-```mermaid
+```
 graph TD
     User[👤 User] -->|HTTPS| React[⚛️ React Frontend (Vite)]
     React -->|Auth| Firebase[🔥 Firebase Auth]
