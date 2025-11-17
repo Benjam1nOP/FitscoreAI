@@ -18,3 +18,4 @@ Thumbs.db
 
 # Logs
 npm-debug.log
+public/config.js
