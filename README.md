@@ -3,7 +3,7 @@
 ![Google Cloud](https://img.shields.io/badge/Google_Cloud-Run_%7C_Vertex_AI_%7C_Storage-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
 ![React](https://img.shields.io/badge/React-Vite_%7C_Tailwind-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth_%7C_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
-![Gemini](https://img.shields.io/badge/AI-Gemini_1.5_Flash-8E75B2?style=for-the-badge&logo=google-bard&logoColor=white)
+![Gemini](https://img.shields.io/badge/AI-Gemini_2.5_Flash-8E75B2?style=for-the-badge&logo=google-bard&logoColor=white)
 
 **FitScore AI** is a modern, serverless application that turns complex medical reports into clear, actionable health insights. Powered by **Google Gemini 1.5 Pro (Multimodal)**, it scans blood tests and medical PDFs to extract vitals, calculate a wellness score, and generate personalized diet and lifestyle recommendations.
 
@@ -55,7 +55,7 @@ graph TD
 1.  **Frontend:** React + TailwindCSS (animations via Framer Motion).
 2.  **Backend:** Node.js (Express) handles file upload streams.
 3.  **Storage:** Files are stored in a **private GCS bucket**.
-4.  **AI Engine:** The backend passes the GCS URI + MIME type to **Vertex AI**, where Gemini 1.5 Flash extracts data and generates advice in JSON format.
+4.  **AI Engine:** The backend passes the GCS URI + MIME type to **Vertex AI**, where Gemini 2.5 Flash extracts data and generates advice in JSON format.
 5.  **Database:** Results are indexed by User ID in **Firestore** for history retrieval.
 
 -----
@@ -66,7 +66,7 @@ graph TD
   * **Backend:** Node.js, Express, Multer (Memory Storage).
   * **Google Cloud:**
       * **Cloud Run:** Serverless container deployment.
-      * **Vertex AI:** Gemini 1.5 Flash model.
+      * **Vertex AI:** Gemini 2.5 Flash model.
       * **Cloud Storage:** Blob storage for reports.
       * **Firestore:** NoSQL database for user history.
       * **Firebase Auth:** Google Sign-In.
