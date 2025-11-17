@@ -26,31 +26,33 @@ async function saveReport(userId, reportData) {
   }
 }
 
-// --- READ: Get user history (NEW) ---
+// --- READ: Get user history ---
 async function getUserHistory(userId) {
   try {
     console.log(`📖 Fetching history for user: ${userId}`);
     const snapshot = await db.collection('reports')
       .where('userId', '==', userId)
-      .orderBy('timestamp', 'desc') // Newest first
-      .limit(10) // Limit to last 10 for performance
+      .orderBy('timestamp', 'desc')
+      .limit(10)
       .get();
 
     if (snapshot.empty) {
       return [];
     }
 
-    // Map the documents to a clean JSON array
     const history = [];
     snapshot.forEach(doc => {
       const data = doc.data();
       history.push({
         id: doc.id,
-        // Convert Firestore timestamp to readable date
         date: data.timestamp ? data.timestamp.toDate().toLocaleDateString() : 'N/A',
+        fileName: data.fileName || 'Unknown File',
         score: data.score || 0,
         summary: data.summary || 'No summary',
-        fileName: data.fileName || 'Unknown File'
+        
+        // ✅ THESE WERE MISSING BEFORE:
+        vitals: data.vitals || {},
+        recommendations: data.recommendations || {}
       });
     });
     

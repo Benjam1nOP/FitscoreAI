@@ -1,4 +1,3 @@
-// public/app.js
 import { auth, provider } from './config.js';
 import { signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
@@ -80,7 +79,12 @@ analyzeBtn.addEventListener('click', async () => {
 });
 
 function renderDashboard(data) {
+    // Hide other views
     document.getElementById('loader').classList.add('hidden');
+    document.getElementById('upload-view').classList.add('hidden');
+    document.getElementById('history-view').classList.add('hidden');
+    
+    // Show Dashboard
     document.getElementById('dashboard-view').classList.remove('hidden');
 
     document.getElementById('score-val').textContent = data.score || "--";
@@ -97,6 +101,8 @@ function renderDashboard(data) {
                     <div class="font-bold text-gray-800 text-sm">${value}</div>
                 </div>`;
         });
+    } else {
+        vitalsGrid.innerHTML = '<p class="text-gray-400 col-span-2">No vitals extracted.</p>';
     }
 
     // Recommendations Helper
@@ -114,10 +120,17 @@ function renderDashboard(data) {
         fillList('rec-diet', data.recommendations.diet);
         fillList('rec-exercise', data.recommendations.exercise);
         fillList('rec-lifestyle', data.recommendations.lifestyle);
+    } else {
+        fillList('rec-diet', []);
+        fillList('rec-exercise', []);
+        fillList('rec-lifestyle', []);
     }
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- 4. History Logic ---
+// --- 4. History Logic (UPDATED) ---
 window.loadHistory = async () => {
     if (!currentUser) return;
     
@@ -126,7 +139,7 @@ window.loadHistory = async () => {
     document.getElementById('history-view').classList.remove('hidden');
 
     const list = document.getElementById('history-list');
-    list.innerHTML = '<div class="text-center text-gray-400">Loading history...</div>';
+    list.innerHTML = '<div class="text-center text-gray-400 py-10"><div class="loader h-8 w-8 mx-auto rounded-full border-2 border-blue-500"></div></div>';
 
     try {
         const res = await fetch(`/history/${currentUser.uid}`);
@@ -134,31 +147,45 @@ window.loadHistory = async () => {
 
         list.innerHTML = '';
         if (history.length === 0) {
-            list.innerHTML = '<div class="text-center text-gray-400">No reports found.</div>';
+            list.innerHTML = '<div class="text-center text-gray-400 py-10">No reports found.</div>';
             return;
         }
 
         history.forEach(item => {
+            // Determine Color
             let scoreClass = "text-gray-600";
             if(item.score >= 80) scoreClass = "text-green-600";
             else if(item.score >= 50) scoreClass = "text-yellow-600";
             else if(item.score > 0) scoreClass = "text-red-600";
 
-            list.innerHTML += `
-                <div class="bg-white p-4 rounded-lg shadow-sm border flex justify-between items-center hover:shadow-md transition">
-                    <div class="overflow-hidden">
-                        <div class="flex items-center gap-2 mb-1">
-                             <span class="text-xs font-bold text-gray-400 uppercase bg-gray-100 px-2 py-0.5 rounded">${item.date}</span>
-                             <span class="font-bold text-gray-800 truncate">${item.fileName}</span>
-                        </div>
-                        <div class="text-sm text-gray-500 truncate w-64">${item.summary}</div>
+            // Create Element (Interactive)
+            const card = document.createElement('div');
+            card.className = "bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center hover:shadow-md transition cursor-pointer hover:bg-blue-50/30 group";
+            
+            card.innerHTML = `
+                <div class="overflow-hidden">
+                    <div class="flex items-center gap-2 mb-1">
+                         <span class="text-xs font-bold text-gray-400 uppercase bg-gray-100 px-2 py-0.5 rounded">${item.date}</span>
+                         <span class="font-bold text-gray-800 truncate group-hover:text-blue-600 transition">${item.fileName}</span>
                     </div>
+                    <div class="text-sm text-gray-500 truncate w-64">${item.summary}</div>
+                </div>
+                <div class="flex items-center gap-3">
                     <div class="text-3xl font-bold ${scoreClass}">${item.score}</div>
+                    <svg class="w-5 h-5 text-gray-300 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </div>
             `;
+
+            // CLICK EVENT: Open the dashboard with this item's data
+            card.addEventListener('click', () => {
+                console.log("Opening report:", item);
+                renderDashboard(item);
+            });
+
+            list.appendChild(card);
         });
     } catch (err) {
         console.error(err);
-        list.innerHTML = '<p class="text-red-500 text-center">Failed to load.</p>';
+        list.innerHTML = '<p class="text-red-500 text-center">Failed to load history.</p>';
     }
 };
