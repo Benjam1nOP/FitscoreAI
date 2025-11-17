@@ -16,6 +16,8 @@
     "@google-cloud/vision": "^5.3.4",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "firebase": "^12.6.0",
+    "firebase-admin": "^13.6.0",
     "multer": "^2.0.2"
   }
 }

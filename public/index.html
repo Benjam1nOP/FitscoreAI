@@ -9,7 +9,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .loader {
-            border-top-color: #2563eb; /* Blue-600 */
+            border-top-color: #2563eb;
             -webkit-animation: spinner 1.5s linear infinite;
             animation: spinner 1.5s linear infinite;
         }
@@ -29,11 +29,11 @@
                 <div class="flex items-center cursor-pointer" onclick="showUpload()">
                     <span class="text-2xl font-bold text-blue-600">FitScore<span class="text-green-500">AI</span></span>
                 </div>
-                <div class="flex items-center space-x-6">
-                    <a href="#" onclick="showUpload()" class="text-sm font-medium text-gray-500 hover:text-blue-600 transition">Home</a>
-                    
-                    <div onclick="showDemoDashboard()" class="flex items-center cursor-pointer text-blue-600 font-semibold bg-blue-50 px-3 py-1 rounded-md hover:bg-blue-100 transition select-none">
-                        Dashboard
+                <div class="flex items-center space-x-4">
+                    <div id="user-info" class="hidden flex items-center space-x-3">
+                        <img id="user-pic" src="" alt="User" class="h-8 w-8 rounded-full border border-gray-200">
+                        <span id="user-name" class="text-sm font-medium text-gray-700"></span>
+                        <button onclick="logout()" class="text-xs text-red-500 hover:text-red-700 font-semibold">Sign Out</button>
                     </div>
                 </div>
             </div>
@@ -42,170 +42,151 @@
 
     <main class="max-w-6xl mx-auto mt-10 px-4 pb-20">
         
-        <div id="hero-text" class="text-center mb-10 transition-all duration-300">
-            <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl">
-                Understand your health <span class="text-blue-600">instantly.</span>
-            </h1>
-            <p class="mt-4 text-lg text-gray-500">
-                Upload your medical report. Get a complete dashboard with BMI, Vitals, and Diet Plans.
-            </p>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200 max-w-3xl mx-auto transition-all duration-300" id="upload-section">
-            <div class="flex flex-col items-center justify-center w-full">
-                <label for="file-upload" class="flex flex-col items-center justify-center w-full h-64 border-2 border-blue-300 border-dashed rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100 transition group">
-                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg class="w-12 h-12 mb-4 text-blue-500 group-hover:scale-110 transition-transform" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                        </svg>
-                        <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                        <p class="text-xs text-gray-500">PDF, PNG, JPG (MAX. 10MB)</p>
-                    </div>
-                    <input id="file-upload" type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png" />
-                </label>
-            </div>
-            <div id="file-name" class="mt-4 text-center text-sm text-blue-600 font-bold hidden"></div>
-            <button id="analyze-btn" class="w-full mt-6 bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                Analyze Report & Open Dashboard
+        <div id="login-section" class="max-w-md mx-auto text-center mt-20">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Welcome to FitScore</h1>
+            <p class="text-gray-500 mb-8">Sign in to analyze your medical reports and track your health history.</p>
+            <button onclick="loginWithGoogle()" class="flex items-center justify-center w-full bg-white border border-gray-300 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-50 transition shadow-sm">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-6 h-6 mr-3">
+                Sign in with Google
             </button>
         </div>
 
-        <div id="loader" class="hidden mt-20 text-center">
-            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4 mx-auto"></div>
-            <h2 class="text-xl font-semibold text-gray-700">AI is analyzing your report...</h2>
-            <p class="text-gray-500">Calculating BMI, FitScore, and Diet Plan</p>
-        </div>
+        <div id="app-content" class="hidden">
+            <div id="hero-text" class="text-center mb-10 transition-all duration-300">
+                <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl">
+                    Understand your health <span class="text-blue-600">instantly.</span>
+                </h1>
+                <p class="mt-4 text-lg text-gray-500">
+                    Upload your medical report. AI extracts the data and scores your health.
+                </p>
+            </div>
 
-        <div id="results-section" class="hidden mt-6 animate-fade-in">
-            
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Your Health Dashboard</h2>
-                    <p class="text-sm text-gray-500" id="dashboard-subtitle">Analysis Overview</p>
+            <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200 max-w-3xl mx-auto transition-all duration-300" id="upload-section">
+                <div class="flex flex-col items-center justify-center w-full">
+                    <label for="file-upload" class="flex flex-col items-center justify-center w-full h-64 border-2 border-blue-300 border-dashed rounded-lg cursor-pointer bg-blue-50 hover:bg-blue-100 transition group">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <svg class="w-12 h-12 mb-4 text-blue-500 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 20 16" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                            </svg>
+                            <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                            <p class="text-xs text-gray-500">Images (PNG, JPG) or Screenshots</p>
+                        </div>
+                        <input id="file-upload" type="file" class="hidden" accept=".jpg,.jpeg,.png" />
+                    </label>
                 </div>
-                <button onclick="showUpload()" class="text-sm text-blue-600 hover:underline flex items-center">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path></svg>
-                    Upload New
+                <div id="file-name" class="mt-4 text-center text-sm text-blue-600 font-bold hidden"></div>
+                <button id="analyze-btn" class="w-full mt-6 bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Analyze Report
                 </button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div id="loader" class="hidden mt-20 text-center">
+                <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4 mx-auto"></div>
+                <h2 class="text-xl font-semibold text-gray-700">AI is analyzing your report...</h2>
+                <p class="text-gray-500">Extracting vitals & calculating score</p>
+            </div>
 
-                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 flex flex-col items-center justify-center md:col-span-1 relative overflow-hidden">
-                    <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-4">Overall FitScore</h3>
-                    <div class="relative h-40 w-40 flex items-center justify-center mb-4">
-                        <div class="absolute inset-0 rounded-full border-8 border-slate-100"></div>
-                        <div class="absolute inset-0 rounded-full border-8 border-green-500 border-t-transparent" style="transform: rotate(-45deg);"></div>
-                        <div class="text-5xl font-bold text-gray-900" id="score-value">--</div>
-                    </div>
-                    <p class="text-center text-sm text-gray-600" id="summary-text">Loading summary...</p>
+            <div id="results-section" class="hidden mt-6 animate-fade-in">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Analysis Results</h2>
+                    <button onclick="showUpload()" class="text-sm text-blue-600 hover:underline">Upload New</button>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 md:col-span-2">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-800">BMI Analysis</h3>
-                            <p class="text-sm text-gray-500">Based on extracted height/weight</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 flex flex-col items-center justify-center md:col-span-1">
+                        <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-4">FitScore</h3>
+                        <div class="text-6xl font-bold text-blue-600 mb-2" id="score-value">--</div>
+                        <p class="text-center text-sm text-gray-600" id="summary-text">...</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 md:col-span-2">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Vitals Extracted</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-3 bg-gray-50 rounded-lg">
+                                <div class="text-xs text-gray-500">BMI</div>
+                                <div class="font-bold text-gray-800" id="bmi-value">--</div>
+                                <div class="text-xs text-gray-400" id="bmi-status">--</div>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-lg">
+                                <div class="text-xs text-gray-500">Blood Pressure</div>
+                                <div class="font-bold text-gray-800" id="vital-bp">--</div>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-lg">
+                                <div class="text-xs text-gray-500">Sugar</div>
+                                <div class="font-bold text-gray-800" id="vital-sugar">--</div>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded-lg">
+                                <div class="text-xs text-gray-500">Cholesterol</div>
+                                <div class="font-bold text-gray-800" id="vital-cholesterol">--</div>
+                            </div>
                         </div>
-                        <span id="bmi-status" class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full">Healthy</span>
-                    </div>
-                    
-                    <div class="flex items-baseline space-x-2 mb-4">
-                        <span class="text-4xl font-bold text-gray-900" id="bmi-value">--</span>
-                        <span class="text-gray-400 text-sm">kg/m²</span>
-                    </div>
-
-                    <div class="w-full bg-gray-200 rounded-full h-4 mb-2 relative">
-                        <div class="absolute top-0 left-0 h-4 bg-blue-500 rounded-full" id="bmi-bar" style="width: 50%"></div>
-                    </div>
-                    <div class="flex justify-between text-xs text-gray-400">
-                        <span>Underweight</span>
-                        <span>Normal</span>
-                        <span>Overweight</span>
-                        <span>Obese</span>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Key Vitals</h3>
-                    <ul class="space-y-4">
-                        <li class="flex justify-between">
-                            <span class="text-gray-500">Blood Pressure</span>
-                            <span class="font-bold text-gray-900" id="vital-bp">--</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span class="text-gray-500">Blood Sugar</span>
-                            <span class="font-bold text-gray-900" id="vital-sugar">--</span>
-                        </li>
-                        <li class="flex justify-between">
-                            <span class="text-gray-500">Cholesterol</span>
-                            <span class="font-bold text-gray-900" id="vital-cholesterol">--</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 md:col-span-2">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                        <span class="bg-orange-100 p-2 rounded-md mr-3">
-                            🍎
-                        </span>
-                        Recommended Diet Plan
-                    </h3>
-                    <ul id="diet-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        </ul>
-                </div>
-
             </div>
         </div>
-
     </main>
 
-    <script>
+    <script type="module">
+        // We use the CDN versions because this is a vanilla HTML file
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // YOUR FIREBASE CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt-TErUfCAQS8Grwe3SprttLsfEjxb4xQ",
+            authDomain: "bnb-478206.firebaseapp.com",
+            projectId: "bnb-478206",
+            storageBucket: "bnb-478206.firebasestorage.app",
+            messagingSenderId: "291126391518",
+            appId: "1:291126391518:web:b18dd6b950ba2897b3884f",
+            measurementId: "G-HJPT7TFHH7"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        let currentUser = null;
+
+        // --- Auth Functions ---
+        window.loginWithGoogle = () => {
+            signInWithPopup(auth, provider)
+                .then((result) => { console.log("Logged in:", result.user.displayName); })
+                .catch((error) => { console.error("Login failed", error); });
+        };
+
+        window.logout = () => {
+            signOut(auth).then(() => { location.reload(); });
+        };
+
+        // --- Listen for Auth State ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                // Show App, Hide Login
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('app-content').classList.remove('hidden');
+                document.getElementById('user-info').classList.remove('hidden');
+                
+                // Update Header
+                document.getElementById('user-name').textContent = user.displayName;
+                document.getElementById('user-pic').src = user.photoURL;
+            } else {
+                // Show Login, Hide App
+                document.getElementById('login-section').classList.remove('hidden');
+                document.getElementById('app-content').classList.add('hidden');
+                document.getElementById('user-info').classList.add('hidden');
+            }
+        });
+
+        // --- File Upload Logic ---
         const fileInput = document.getElementById('file-upload');
         const fileNameDisplay = document.getElementById('file-name');
         const analyzeBtn = document.getElementById('analyze-btn');
-        const uploadSection = document.getElementById('upload-section');
-        const heroText = document.getElementById('hero-text');
-        const loader = document.getElementById('loader');
-        const resultsSection = document.getElementById('results-section');
-
         let selectedFile = null;
-
-        // === NEW: Functions to Toggle Views ===
-        
-        function showUpload() {
-            resultsSection.classList.add('hidden');
-            loader.classList.add('hidden');
-            heroText.classList.remove('hidden');
-            uploadSection.classList.remove('hidden');
-        }
-
-        function showDemoDashboard() {
-            // Hide Upload UI
-            heroText.classList.add('hidden');
-            uploadSection.classList.add('hidden');
-            loader.classList.add('hidden');
-
-            // Render Demo Data
-            renderDashboard({
-                score: 88,
-                summary: "Excellent! Your metabolic markers are strong. Keep maintaining your current activity levels.",
-                bmi: 22.4,
-                bmiStatus: "Healthy Weight",
-                vitals: {
-                    bp: "120/80 mmHg",
-                    sugar: "95 mg/dL",
-                    cholesterol: "180 mg/dL"
-                },
-                dietPlan: [
-                    "Breakfast: Greek yogurt with berries (High Protein)",
-                    "Lunch: Grilled chicken salad with olive oil",
-                    "Dinner: Steamed fish with quinoa",
-                    "Snack: Handful of almonds"
-                ]
-            });
-        }
-        // ======================================
 
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length > 0) {
@@ -216,74 +197,59 @@
         });
 
         analyzeBtn.addEventListener('click', async () => {
-            if (!selectedFile) { alert("Please select a file first."); return; }
+            if (!selectedFile) { alert("Please select a file."); return; }
+            if (!currentUser) { alert("Please login first."); return; }
 
-            uploadSection.classList.add('hidden');
-            heroText.classList.add('hidden');
-            loader.classList.remove('hidden');
+            // UI Updates
+            document.getElementById('upload-section').classList.add('hidden');
+            document.getElementById('hero-text').classList.add('hidden');
+            document.getElementById('loader').classList.remove('hidden');
 
             const formData = new FormData();
             formData.append('report', selectedFile);
+            // IMPORTANT: Send the User ID to the backend!
+            formData.append('userId', currentUser.uid); 
 
             try {
+                // Note: If running locally, this is /upload. 
+                // If running on Cloud Run, use the full URL if needed, but usually relative path works fine.
                 const response = await fetch('/upload', { method: 'POST', body: formData });
                 const data = await response.json();
 
                 if (response.ok) {
                     renderDashboard(data);
                 } else {
-                    alert('Error: ' + (data.error || 'Unknown error'));
+                    alert('Error: ' + data.message);
                     location.reload();
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to connect to server.');
+                console.error(error);
+                alert('Analysis failed.');
                 location.reload();
             }
         });
 
         function renderDashboard(data) {
-            loader.classList.add('hidden');
-            resultsSection.classList.remove('hidden');
+            document.getElementById('loader').classList.add('hidden');
+            document.getElementById('results-section').classList.remove('hidden');
 
-            // 1. FitScore
             document.getElementById('score-value').textContent = data.score || 0;
             document.getElementById('summary-text').textContent = data.summary || "Analysis complete.";
-
-            // 2. BMI
-            document.getElementById('bmi-value').textContent = data.bmi || "--";
-            const bmiStatusEl = document.getElementById('bmi-status');
-            bmiStatusEl.textContent = data.bmiStatus || "Unknown";
             
-            // Simple color logic for BMI
-            if(data.bmiStatus === 'Overweight' || data.bmiStatus === 'Obese') { 
-                bmiStatusEl.className = "bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full"; 
-                document.getElementById('bmi-bar').classList.replace('bg-blue-500', 'bg-orange-500');
-            }
-            else if(data.bmiStatus === 'Normal' || data.bmiStatus === 'Healthy Weight') { 
-                bmiStatusEl.className = "bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full";
-                document.getElementById('bmi-bar').classList.replace('bg-orange-500', 'bg-blue-500'); // Reset to blue/green
-            }
-            else { 
-                bmiStatusEl.className = "bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full"; 
-            }
-
-            // 3. Vitals
-            if(data.vitals) {
+            document.getElementById('bmi-value').textContent = data.bmi || "--";
+            document.getElementById('bmi-status').textContent = data.bmiStatus || "";
+            
+            if (data.vitals) {
                 document.getElementById('vital-bp').textContent = data.vitals.bp || "--";
                 document.getElementById('vital-sugar').textContent = data.vitals.sugar || "--";
                 document.getElementById('vital-cholesterol').textContent = data.vitals.cholesterol || "--";
             }
+        }
 
-            // 4. Diet Plan
-            const dietList = document.getElementById('diet-list');
-            dietList.innerHTML = '';
-            (data.dietPlan || []).forEach(item => {
-                const li = document.createElement('li');
-                li.className = "flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100 text-sm text-gray-700";
-                li.innerHTML = `<span class="text-green-500 font-bold mr-2">✓</span> ${item}`;
-                dietList.appendChild(li);
-            });
+        window.showUpload = () => {
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('upload-section').classList.remove('hidden');
+            document.getElementById('hero-text').classList.remove('hidden');
         }
     </script>
 </body>
