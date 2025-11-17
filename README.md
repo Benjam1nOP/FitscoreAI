@@ -5,7 +5,7 @@
 ![Firebase](https://img.shields.io/badge/Firebase-Auth_%7C_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![Gemini](https://img.shields.io/badge/AI-Gemini_2.5_Flash-8E75B2?style=for-the-badge&logo=google-bard&logoColor=white)
 
-**FitScore AI** is a modern, serverless application that turns complex medical reports into clear, actionable health insights. Powered by **Google Gemini 1.5 Pro (Multimodal)**, it scans blood tests and medical PDFs to extract vitals, calculate a wellness score, and generate personalized diet and lifestyle recommendations.
+**FitScore AI** is a modern, serverless application that turns complex medical reports into clear, actionable health insights. Powered by **Google Gemini 2.5 Flash (Multimodal)**, it scans blood tests and medical PDFs to extract vitals, calculate a wellness score, and generate personalized diet and lifestyle recommendations.
 
 ---
 
