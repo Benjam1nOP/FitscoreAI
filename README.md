@@ -1,7 +1,5 @@
 # 🩺 FitScore AI – Personalized Health Score and Insights from Medical Reports
 
-![FitScore AI Banner](https://via.placeholder.com/1200x400/0f172a/3b82f6?text=FitScore+AI+Dashboard)
-
 ![Google Cloud](https://img.shields.io/badge/Google_Cloud-Run_%7C_Vertex_AI_%7C_Storage-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
 ![React](https://img.shields.io/badge/React-Vite_%7C_Tailwind-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Firebase](https://img.shields.io/badge/Firebase-Auth_%7C_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
@@ -26,11 +24,11 @@
 
 | **Landing Page** | **AI Dashboard** |
 |:---:|:---:|
-| <img src="./frontend/src/assets/dashboard-preview.png" width="400" alt="Landing Page"> | <img src="https://via.placeholder.com/400x250/E0F2FE/2563EB?text=Analysis+Result" width="400" alt="Dashboard"> |
+| <img src="./frontend/src/assets/landingpage.png" width="400" alt="Landing Page"> | <img src="./frontend/src/assets/preview.png" width="400" alt="Dashboard"> |
 
-| **History View** | **Mobile Responsive** |
-|:---:|:---:|
-| <img src="https://via.placeholder.com/400x250/F1F5F9/475569?text=History+Tracking" width="400" alt="History"> | <img src="https://via.placeholder.com/400x250/FFFFFF/000000?text=Mobile+View" width="400" alt="Mobile"> |
+| **History View**
+|:---:|
+| <img src="./frontend/src/assets/historyview.png" width="400" alt="History"> |
 
 ---
 
