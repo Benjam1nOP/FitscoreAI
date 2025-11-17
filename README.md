@@ -163,15 +163,5 @@ gcloud run deploy fitscore-backend \
   --set-env-vars GCS_BUCKET_NAME=your-bucket,GOOGLE_CLOUD_PROJECT_ID=your-id,GOOGLE_CLOUD_LOCATION=us-central1
 ```
 
------
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
------
-
 *Built with ❤️ for the Google Cloud Build & Blog Marathon.*
-
-```
 ```
