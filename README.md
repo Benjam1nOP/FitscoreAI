@@ -1,162 +1,179 @@
-# 🧠 FitScore AI – Personalized Health Score and Insights from Medical Reports
+# 🩺 FitScore AI – Personalized Health Score and Insights from Medical Reports
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node.js](https://img.shields.io/badge/Node.js-18-green)
-![Google Cloud](https://img.shields.io/badge/Google_Cloud-Run_%7C_Vision_%7C_Vertex_AI-4285F4)
-![Firebase](https://img.shields.io/badge/Firebase-Auth_%7C_Firestore-FFCA28)
+![FitScore AI Banner](https://via.placeholder.com/1200x400/0f172a/3b82f6?text=FitScore+AI+Dashboard)
 
-**FitScore AI** is a serverless, AI-powered application that transforms complex medical reports into clear, actionable health insights. By leveraging **Google Cloud Vertex AI (Gemini)** and **Cloud Vision**, users can simply upload a photo of their blood test or checkup report to receive an instant "FitScore," a personalized summary, and dietary recommendations.
+![Google Cloud](https://img.shields.io/badge/Google_Cloud-Run_%7C_Vertex_AI_%7C_Storage-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
+![React](https://img.shields.io/badge/React-Vite_%7C_Tailwind-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Firebase](https://img.shields.io/badge/Firebase-Auth_%7C_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![Gemini](https://img.shields.io/badge/AI-Gemini_1.5_Flash-8E75B2?style=for-the-badge&logo=google-bard&logoColor=white)
+
+**FitScore AI** is a modern, serverless application that turns complex medical reports into clear, actionable health insights. Powered by **Google Gemini 1.5 Pro (Multimodal)**, it scans blood tests and medical PDFs to extract vitals, calculate a wellness score, and generate personalized diet and lifestyle recommendations.
 
 ---
 
-## 🚀 Features
+## 🚀 Key Features
 
-* **📸 Multimodal Ingestion:** Upload images (PNG/JPG) of medical reports directly from the browser.
-* **👁️ OCR Extraction:** Uses **Google Cloud Vision API** to accurately read text from scans and photos.
-* **🧠 AI Analysis:** Powered by **Gemini 1.5 Flash** to interpret medical data, calculate BMI, and assess vitals (Glucose, BP, Cholesterol).
-* **📊 Personalized Dashboard:** Displays a calculated 0-100 "FitScore," status indicators, and AI-generated diet plans.
-* **🔐 Secure Authentication:** Integrated **Firebase Authentication** (Google Sign-In) for secure user access.
-* **☁️ Cloud Native:** Fully serverless architecture deployed on **Google Cloud Run** with data stored in **Firestore**.
+* **📄 Multimodal Analysis:** Upload **Images (JPG/PNG)** or **Multi-page PDFs**. Gemini reads raw documents directly from Cloud Storage.
+* **🧠 AI-Powered Diagnostics:** Extracts 30+ key vitals (Hemoglobin, Glucose, Cholesterol, etc.) and cross-references them with healthy ranges.
+* **📊 The "FitScore":** A proprietary algorithm that condenses complex lab data into a single 0-100 wellness score.
+* **🥗 Actionable Plans:** Generates specific, AI-written recommendations for **Diet**, **Exercise**, and **Lifestyle** improvements.
+* **📜 Historical Tracking:** Users can sign in to save reports and track their health journey over time.
+* **🔐 Enterprise Security:** Fully secured with Firebase Authentication and Google Cloud IAM service identities.
+
+---
+
+## 📸 Screenshots
+
+| **Landing Page** | **AI Dashboard** |
+|:---:|:---:|
+| <img src="./frontend/src/assets/dashboard-preview.png" width="400" alt="Landing Page"> | <img src="https://via.placeholder.com/400x250/E0F2FE/2563EB?text=Analysis+Result" width="400" alt="Dashboard"> |
+
+| **History View** | **Mobile Responsive** |
+|:---:|:---:|
+| <img src="https://via.placeholder.com/400x250/F1F5F9/475569?text=History+Tracking" width="400" alt="History"> | <img src="https://via.placeholder.com/400x250/FFFFFF/000000?text=Mobile+View" width="400" alt="Mobile"> |
 
 ---
 
 ## 🏗️ Architecture
 
-The application follows a stateless, serverless microservices architecture:
+FitScore AI follows a **Monorepo** structure deployed as a single container on **Cloud Run**.
 
 ```mermaid
 graph TD
-    User[👤 User Frontend] -->|1. Auth & Upload| Run[🚀 Node.js on Cloud Run]
-    Run -->|2. Store File| GCS[📦 Cloud Storage]
-    Run -->|3. Extract Text| Vision[👁️ Cloud Vision API]
-    Run -->|4. Analyze Data| Gemini[🧠 Vertex AI (Gemini 1.5)]
-    Run -->|5. Save Result| DB[🔥 Firestore Database]
-    Run -->|6. JSON Response| User
+    User[👤 User] -->|HTTPS| React[⚛️ React Frontend (Vite)]
+    React -->|Auth| Firebase[🔥 Firebase Auth]
+    React -->|API POST| Node[🚀 Node.js Backend]
+    
+    subgraph Google Cloud Platform
+        Node -->|1. Stream File| GCS[📦 Cloud Storage]
+        Node -->|2. Analyze (Multimodal)| Gemini[🧠 Vertex AI (Gemini 1.5)]
+        Node -->|3. Read/Write Data| Firestore[🗄️ Firestore Database]
+    end
+    
+    Gemini -->|JSON Response| Node
+    Node -->|Data + Score| React
 ````
 
-1.  **Frontend:** HTML5/TailwindCSS interface handles file selection and auth.
-2.  **Ingestion:** Files are streamed to **Cloud Storage**.
-3.  **Processing:** **Vision API** performs OCR; **Gemini** analyzes the raw text against medical prompt guidelines.
-4.  **Persistence:** Results are tagged with the User ID and saved to **Firestore**.
+1.  **Frontend:** React + TailwindCSS (animations via Framer Motion).
+2.  **Backend:** Node.js (Express) handles file upload streams.
+3.  **Storage:** Files are stored in a **private GCS bucket**.
+4.  **AI Engine:** The backend passes the GCS URI + MIME type to **Vertex AI**, where Gemini 1.5 Flash extracts data and generates advice in JSON format.
+5.  **Database:** Results are indexed by User ID in **Firestore** for history retrieval.
 
 -----
 
 ## 🛠️ Tech Stack
 
-  * **Frontend:** HTML5, TailwindCSS, Firebase Web SDK
-  * **Backend:** Node.js, Express.js
-  * **AI & ML:** Google Vertex AI (Gemini 1.5 Flash), Cloud Vision API
-  * **Infrastructure:** Google Cloud Run, Cloud Build
-  * **Storage & Database:** Google Cloud Storage, Firebase Firestore
-  * **Security:** IAM Service Accounts, Firebase Auth
+  * **Frontend:** React 18, Vite, TailwindCSS, Framer Motion, Lucide Icons.
+  * **Backend:** Node.js, Express, Multer (Memory Storage).
+  * **Google Cloud:**
+      * **Cloud Run:** Serverless container deployment.
+      * **Vertex AI:** Gemini 1.5 Flash model.
+      * **Cloud Storage:** Blob storage for reports.
+      * **Firestore:** NoSQL database for user history.
+      * **Firebase Auth:** Google Sign-In.
 
 -----
 
-## ⚡ Getting Started
-
-Follow these steps to run the project locally.
+## ⚡ Getting Started Locally
 
 ### 1\. Prerequisites
 
-  * Node.js (v18+) installed.
-  * A Google Cloud Platform Account.
-  * A Firebase Project (linked to Google Cloud).
+  * Node.js (v18+)
+  * Google Cloud Project with Billing Enabled.
+  * Service Account Key (`service-account-key.json`) with permissions: `Storage Object Admin`, `Vertex AI User`, `Firebase Admin`.
 
-### 2\. Clone the Repository
+### 2\. Clone & Install
 
 ```bash
 git clone [https://github.com/YOUR_USERNAME/FitScoreAI.git](https://github.com/YOUR_USERNAME/FitScoreAI.git)
 cd FitScoreAI
+
+# Install Backend Deps
+npm install
+
+# Install Frontend Deps
+cd frontend
+npm install
 ```
 
-### 3\. Google Cloud Setup
+### 3\. Configuration
 
-1.  Create a project in Google Cloud Console.
-2.  Enable the following APIs:
-      * Vertex AI API
-      * Cloud Vision API
-      * Cloud Storage
-      * Cloud Run API
-3.  Create a **Service Account** with these roles:
-      * `Storage Object Admin`
-      * `Vertex AI User`
-      * `Firebase Admin`
-4.  Download the JSON key key for this service account and rename it to `service-account-key.json`.
-5.  **Place this file in the root directory.** (Note: It is git-ignored for security).
-
-### 4\. Environment Variables
-
-Create a `.env` file in the root directory:
+Create a `.env` file in the **root** directory:
 
 ```env
 PORT=3000
-# Your Google Cloud Project ID
-GOOGLE_CLOUD_PROJECT_ID=your-project-id-here
-# Region for AI Models (Recommended: us-central1)
+GOOGLE_CLOUD_PROJECT_ID=your-project-id
 GOOGLE_CLOUD_LOCATION=us-central1
-# Name of your storage bucket
-GCS_BUCKET_NAME=your-unique-bucket-name
-# Path to the key file you downloaded
+GCS_BUCKET_NAME=your-bucket-name
 GOOGLE_APPLICATION_CREDENTIALS=./service-account-key.json
 ```
 
-### 5\. Frontend Config
+Create a `.env` file in the **frontend** directory:
 
-Update `public/index.html` with your **Firebase Web Configuration**:
-
-```javascript
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    // ... other config values
-};
+```env
+VITE_API_KEY=your-firebase-api-key
+VITE_AUTH_DOMAIN=your-project.firebaseapp.com
+# ... other firebase config
+VITE_API_URL=http://localhost:3000
 ```
 
-### 6\. Run Locally
+### 4\. Run Locally
+
+**Backend:**
 
 ```bash
-npm install
+# In root folder
 node index.js
 ```
 
-Open `http://localhost:3000` in your browser.
+**Frontend:**
+
+```bash
+# In frontend folder
+npm run dev
+```
 
 -----
 
-## 🚢 Deployment (Google Cloud Run)
+## 🚢 Deployment
 
-This project includes a `Dockerfile` for easy deployment.
+The app is containerized using Docker and deployed to **Google Cloud Run**.
+
+### 1\. Build the Frontend
+
+Compile the React app into static files served by the backend.
 
 ```bash
-# 1. Set your project
-gcloud config set project YOUR_PROJECT_ID
+cd frontend
+npm run build
+cd ..
+rm -rf public/*
+cp -r frontend/dist/* public/
+```
 
-# 2. Deploy
+### 2\. Deploy to Cloud Run
+
+```bash
 gcloud run deploy fitscore-backend \
   --source . \
+  --project YOUR_PROJECT_ID \
   --region us-central1 \
   --allow-unauthenticated \
+  --clear-base-image \
   --service-account YOUR_SERVICE_ACCOUNT_EMAIL \
   --set-env-vars GCS_BUCKET_NAME=your-bucket,GOOGLE_CLOUD_PROJECT_ID=your-id,GOOGLE_CLOUD_LOCATION=us-central1
 ```
 
 -----
 
-## 📸 Screenshots
-
-| Login Screen | Dashboard Analysis |
-|:---:|:---:|
-| *Add a screenshot of your login page here* | *Add a screenshot of the results page here* |
-
------
-
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
+This project is licensed under the MIT License.
 
 -----
 
-*Built for the Google Cloud Build & Blog Marathon.*
+*Built with ❤️ for the Google Cloud Build & Blog Marathon.*
 
 ```
 ```
