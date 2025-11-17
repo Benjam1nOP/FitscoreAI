@@ -4,8 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  @apply bg-slate-50 text-slate-900 font-sans antialiased;
+  @apply bg-white text-slate-900 font-sans antialiased;
 }
 
 /* Custom Scrollbar */
